@@ -35,9 +35,10 @@ The analysis led to three primary recommendations for Bellabeat's C-suite:
 | 3. Utilize Weekly Tracking Summaries | Send targeted weekly personalized summary emails to reinforce consistency and show progress. | Usage patterns showed that consistency drops off after the initial weeks, indicating a need for nudges to maintain engagement. |
 
 ## Visualizations  
-Briefly describe and link/embed 1-2 of your most impactful charts here. If embedding isn't easy, a screenshot is perfect.  
-Example:Daily Activity SegmentsThis visualization shows the distribution of users across different activity levels, clearly highlighting the large proportion of Lightly Active and Sedentary users who are ripe for motivation.  
-Getty ImagesChart Insight: The goal is to move users from the 'Lightly Active' group into the 'Fairly Active' and 'Very Active' segments through targeted app features.  
+![Activity Levels in Users](Bellabeat Activity.jpeg)
+This visualization shows the distribution of users across different activity levels, clearly highlighting the large proportion of Lightly Active and Sedentary users who are ripe for motivation.  
+Insight: The goal is to move users from the 'Lightly Active' group into the 'Fairly Active' and 'Very Active' segments through targeted app features.  
 
 ## Repository Contents  
-bellabeat_case_study.Rmd: The complete R Markdown file containing all code for data cleaning, analysis, and visualization.bellabeat_report.pdf (or .html): The final generated report detailing the findings and recommendations.dailyActivity_merged.csv: The cleaned primary dataset used for analysis.
+- Bellabeat_rmd.Rmd: The complete R Markdown file containing all code for data cleaning, analysis, and visualization.
+- Bellabeat_rmd.html: The final generated report detailing the findings and recommendations.
