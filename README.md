@@ -30,9 +30,8 @@ The analysis led to three primary recommendations for Bellabeat's C-suite:
 
 | Recommendation | Strategy | Supporting Data/Rationale |
 | --- | --- | --- |
-| 1. Drive High-Intensity Engagement | Implement a Goal-Setting Feature in the Bellabeat app that encourages users to achieve a set amount of Active Zone Minutes (high-intensity activity). | Only 1.7% of daily activity minutes were categorized as Very Active, indicating low engagement in intense exercise despite high device ownership. |
+| 1. Drive High-Intensity Engagement | Implement a Goal-Setting Feature in the Bellabeat app that encourages users to achieve a set amount of Active Zone Minutes (high-intensity activity). | Less than 2% of daily activity minutes were categorized as Very Active, indicating low engagement in intense exercise despite high device ownership. |
 | 2. Prioritize Sleep Health Scores | Focus marketing and in-app messaging on Sleep Quality and Recovery as a key selling point, integrating it with activity advice. | Sleep tracking demonstrated high, consistent user engagement. Bellabeat can leverage this by linking sleep metrics to daily energy levels. |
-| 3. Utilize Weekly Tracking Summaries | Send targeted weekly personalized summary emails to reinforce consistency and show progress. | Usage patterns showed that consistency drops off after the initial weeks, indicating a need for nudges to maintain engagement. |
 
 ## Visualizations  
 ![Activity Levels in Users](https://github.com/dlclark79-dotcom/Bellabeat_FitBit_Capstone/blob/main/Bellabeat%20Activity.jpeg)  
