@@ -1,0 +1,301 @@
+---
+title: "Bellabeat_rmd"
+author: "Lee CLark"
+output: html_document
+date: "2025-11-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE) # Hides code chunks in knitted document.  
+```
+
+# Usage Trends in FitBit Data for Bellabeat Capstone Project  
+
+## Packages
+tidyverse, here, skimr, janitor, lubridate.  
+```{r include=FALSE}
+library("tidyverse")
+library("here")
+library("skimr")
+library("janitor")
+library("lubridate")
+```
+
+
+## Business Task  
+To analyze smart device usage data to gain insight into how non-Bellabeat devices are used.  Choose one product to apply these insights to.  What are some trends in smart device usage?  How could these trends apply to Bellabeat customer?  How could these trends influence Bellabeat marketing strategy?  
+
+## Data Sources 
+[FitBit Fitness Tracker Data](https://www.kaggle.com/datasets/arashnic/fitbit) (CC0: Public Domain, data set made available through [Mobius](https://www.kaggle.com/arashnic)): 
+This Kaggle data set contains personal fitness tracker from thirty FitBit users. Thirty eligible Fitbit users consented to the submission of
+personal tracker data, including minute-level output for physical activity, heart rate, and sleep monitoring. It includes
+information about daily activity, steps, and heart rate that can be used to explore users’ habits.  
+It should be noted that the Calories in the below analysis are dietary Calories or kilocalories (kcal). 
+```{r include=FALSE}
+setwd("~/Fitabase Data 4.12.16-5.12.16")
+dailyActivity_merged <- read_csv("dailyActivity_merged.csv")
+dailyCalories_merged <- read_csv("dailyCalories_merged.csv")
+dailyIntensities_merged <- read_csv("dailyIntensities_merged.csv")
+dailySteps_merged <- read_csv("dailySteps_merged.csv")
+heartrate_seconds_merged <- read_csv("heartrate_seconds_merged.csv")
+hourlyCalories_merged <- read_csv("hourlyCalories_merged.csv")
+hourlyIntensities_merged <- read_csv("hourlyIntensities_merged.csv")
+hourlySteps_merged <- read_csv("hourlySteps_merged.csv")
+minuteCaloriesNarrow_merged <- read_csv("minuteCaloriesNarrow_merged.csv")
+minuteCaloriesWide_merged <- read_csv("minuteCaloriesWide_merged.csv")
+minuteIntensitiesNarrow_merged <- read_csv("minuteIntensitiesNarrow_merged.csv")
+minuteIntensitiesWide_merged <- read_csv("minuteIntensitiesWide_merged.csv")
+minuteMETsNarrow_merged <- read_csv("minuteMETsNarrow_merged.csv")
+minuteSleep_merged <- read_csv("minuteSleep_merged.csv")
+minuteStepsNarrow_merged <- read_csv("minuteStepsNarrow_merged.csv")
+minuteStepsWide_merged <- read_csv("minuteStepsWide_merged.csv")
+sleepDay_merged <- read_csv("sleepDay_merged.csv")
+weightLogInfo_merged <- read_csv("weightLogInfo_merged.csv")
+```
+
+## Data Cleaning  
+Duplicated tables for cleaning and converted all column names to snake case.  
+```{r include=FALSE}
+daily_activity <- dailyActivity_merged %>% 
+  clean_names()
+daily_calories <- dailyCalories_merged %>% 
+  clean_names()
+daily_intensities <- dailyIntensities_merged %>% 
+  clean_names()
+daily_steps <- dailySteps_merged %>% 
+  clean_names()
+heartrate_seconds <- heartrate_seconds_merged %>% 
+  clean_names()
+hourly_calories <- hourlyCalories_merged %>% 
+  clean_names()
+hourly_intensities <- hourlyIntensities_merged %>% 
+  clean_names()
+hourly_steps <- hourlySteps_merged %>% 
+  clean_names()
+minute_calories_narrow <- minuteCaloriesNarrow_merged %>% 
+  clean_names()
+minute_calories_wide <- minuteCaloriesWide_merged %>% 
+  clean_names()
+minute_intensities_narrow <- minuteIntensitiesNarrow_merged %>% 
+  clean_names()
+minute_intensities_wide <- minuteIntensitiesWide_merged %>% 
+  clean_names()
+minute_mets_narrow <- minuteMETsNarrow_merged %>% 
+  clean_names()
+minute_sleep <- minuteSleep_merged %>% 
+  clean_names()
+minute_steps_narrow <- minuteStepsNarrow_merged %>% 
+  clean_names()
+minute_steps_wide <- minuteStepsWide_merged %>% 
+  clean_names()
+sleep_day <- sleepDay_merged %>% 
+  clean_names()
+weight_log_info <- weightLogInfo_merged %>% 
+  clean_names()
+```
+
+Converted all dates and times from character into correct date or date/time format.  
+```{r include=FALSE}
+daily_activity$activity_date <- mdy(daily_activity$activity_date)
+daily_calories$activity_day <- mdy(daily_calories$activity_day)
+daily_intensities$activity_day <- mdy(daily_intensities$activity_day)
+daily_steps$activity_day <- mdy(daily_steps$activity_day)
+heartrate_seconds$time <- mdy_hms(heartrate_seconds$time)
+hourly_calories$activity_hour <- mdy_hms(hourly_calories$activity_hour)
+hourly_intensities$activity_hour <- mdy_hms(hourly_intensities$activity_hour)
+hourly_steps$activity_hour <- mdy_hms(hourly_steps$activity_hour)
+minute_calories_narrow$activity_minute <- mdy_hms(minute_calories_narrow$activity_minute)
+minute_calories_wide$activity_hour<- mdy_hms(minute_calories_wide$activity_hour)
+minute_intensities_narrow$activity_minute <- mdy_hms(minute_intensities_narrow$activity_minute)
+minute_intensities_wide$activity_hour <- mdy_hms(minute_intensities_wide$activity_hour)
+minute_mets_narrow$activity_minute <- mdy_hms(minute_mets_narrow$activity_minute)
+minute_sleep$date <- mdy_hms(minute_sleep$date)
+minute_steps_narrow$activity_minute <- mdy_hms(minute_steps_narrow$activity_minute)
+minute_steps_wide$activity_hour <- mdy_hms(minute_steps_wide$activity_hour)
+sleep_day$sleep_day <- mdy_hms(sleep_day$sleep_day)
+weight_log_info$date <- mdy_hms(weight_log_info$date)
+```
+
+Found 543 duplicates in minute_sleep.  Found 3 duplicates in sleep_day.  sum(duplicated(date_frame_name))
+Removed duplicates.  
+```{r include=FALSE}
+minute_sleep <- minute_sleep %>% 
+  distinct()
+sleep_day <- sleep_day %>% 
+  distinct()
+```
+
+Many tables have 33 unique ids.  However, some have fewer.  Notables are:  heartrate_seconds at 14, minute_sleep at 24, sleep_day at 24, and weight_log_info at 8.  
+```{r include=FALSE}
+n_distinct(daily_activity$id)
+n_distinct(daily_calories$id)
+n_distinct(daily_intensities$id)
+n_distinct(daily_steps$id)
+n_distinct(heartrate_seconds$id)
+n_distinct(hourly_calories$id)
+n_distinct(hourly_intensities$id)
+n_distinct(hourly_steps$id)
+n_distinct(minute_calories_narrow$id)
+n_distinct(minute_calories_wide$id)
+n_distinct(minute_intensities_narrow$id)
+n_distinct(minute_intensities_wide$id)
+n_distinct(minute_mets_narrow$id)
+n_distinct(minute_sleep$id)
+n_distinct(minute_steps_narrow$id)
+n_distinct(minute_steps_wide$id)
+n_distinct(sleep_day$id)
+n_distinct(weight_log_info$id)
+```
+
+Checked for missing values (NA).  There were 65 missing values in weight_log_info.  
+```{r include=FALSE}
+sum(is.na(daily_activity))
+sum(is.na(daily_calories))
+sum(is.na(daily_intensities))
+sum(is.na(daily_steps))
+sum(is.na(heartrate_seconds))
+sum(is.na(hourly_calories))
+sum(is.na(hourly_intensities))
+sum(is.na(hourly_steps))
+sum(is.na(minute_calories_narrow))
+sum(is.na(minute_calories_wide))
+sum(is.na(minute_intensities_narrow))
+sum(is.na(minute_intensities_wide))
+sum(is.na(minute_mets_narrow))
+sum(is.na(minute_sleep))
+sum(is.na(minute_steps_narrow))
+sum(is.na(minute_steps_wide))
+sum(is.na(sleep_day))
+sum(is.na(weight_log_info))
+```
+The missing values are all in the fat column, data in the other columns may prove useful so rows were not deleted.  
+
+```{r}
+daily_activity <- daily_activity %>% 
+  rename(obs_date = activity_date)
+sleep_day <- sleep_day %>% 
+  rename(obs_date = sleep_day)
+activity_plus_sleep <- merge(sleep_day, daily_activity, all.x = TRUE)
+```
+
+## Summary Statistics  
+```{r}
+cat("daily_activity", "\n")
+daily_activity %>% 
+  select(total_steps,total_distance,sedentary_minutes) %>% 
+  summary() %>% 
+  knitr::kable() ## Forces output text to be displayed without ## during knit.  
+cat("\n")  # Adds a line of white space between summaries.  
+cat("sleep_day", "\n")
+sleep_day %>% 
+  select(total_sleep_records, total_minutes_asleep, total_time_in_bed) %>% 
+  summary() %>% 
+  knitr::kable()
+```
+
+Summarized statistics for the daily_intensities table.  
+```{r}
+intensity_summary <- daily_intensities %>% 
+  group_by(id) %>% 
+  summarise(sedentary_minutes = sum(sedentary_minutes), lightly_active_minutes = sum(lightly_active_minutes), 
+            fairly_active_minutes = sum(fairly_active_minutes), very_active_minutes = sum(very_active_minutes))
+```
+
+```{r}
+cat("Summary of Activity Intensities", "\n")
+intensity_summary %>% 
+  select(sedentary_minutes, lightly_active_minutes, fairly_active_minutes, very_active_minutes) %>% 
+  summary() %>% 
+  knitr::kable()
+```
+
+# Plots  
+```{r}
+ggplot(data = daily_activity, aes(x = total_steps, y = sedentary_minutes)) + geom_point() + 
+  labs(title = "Total Steps versus Sedentary Minutes", 
+       x= "Total Steps", 
+       y = "Sedentary Minutes") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+ggplot(data = sleep_day, aes(x = total_minutes_asleep, y = total_time_in_bed)) + geom_point() + 
+  labs(title = "Time Alseep versus Time in Bed", 
+       x= "Total Minutes Asleep", 
+       y = "Time in Bed (Minutes)") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+ggplot(data = activity_plus_sleep, aes(x = total_minutes_asleep, y = total_steps)) + geom_point() + 
+  labs(title = "Total Steps versus Time Asleep", 
+       x= "Total Minutes Asleep", 
+       y = "Total Steps") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+ggplot(data = activity_plus_sleep, aes(x = total_minutes_asleep, y = calories)) + geom_point() + 
+  labs(title = "Time Alseep versus Calories Burned", 
+       x= "Total Minutes Asleep", 
+       y = "Calories") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+ggplot(data = daily_activity, aes(x = total_steps, y = calories)) + geom_point() + 
+  labs(title = "Calories Burned versus Total Steps", 
+       x= "Total Steps", 
+       y = "Calories") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+calorie_intensity <- merge(daily_calories, daily_intensities, by = c("id", "activity_day"))
+ggplot(data = calorie_intensity, aes(x = sedentary_minutes, y = calories)) + geom_point() + 
+  labs(title = "Calories Burned versus Rest Time", 
+       x= "Calories", 
+       y = "Sedentary Minutes") + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = calorie_intensity, aes(x = lightly_active_minutes, y = calories)) + geom_point() + 
+  labs(title = "Calories Burned versus Light Activity Time", 
+       x= "Calories", 
+       y = "Lightly Active Minutes") + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = calorie_intensity, aes(x = fairly_active_minutes, y = calories)) + geom_point() + 
+  labs(title = "Calories Burned versus Fairly Active Time", 
+       x= "Calories", 
+       y = "Fairly Active MInutes") + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(data = calorie_intensity, aes(x = very_active_minutes, y = calories)) + geom_point() + 
+  labs(title = "Calories Burned versus Very Active TIme", 
+       x= "Calories", 
+       y = "Very Active MInutes") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Condensed median minutes of activity into a table for plotting a bar graph.  
+```{r}
+bar_graph_data <- data.frame(activity_level = c("sedentary", "lightly_active", "fairly_active", "very_active"), 
+                             median_minutes = c(median(intensity_summary$sedentary_minutes), median(intensity_summary$lightly_active_minutes), 
+                                                median(intensity_summary$fairly_active_minutes), median(intensity_summary$very_active_minutes)))
+column_order <- c("sedentary", "lightly_active", "fairly_active", "very_active")
+bar_graph_data$activity_level <- factor(bar_graph_data$activity_level, levels = column_order)
+```
+
+Median time at each activity level over one month.  
+```{r}
+ggplot(data = bar_graph_data, aes(x = activity_level, y = median_minutes, fill = activity_level)) + geom_col() + 
+  labs(title = "Activity Levels Over One Month of FitBit Use", 
+       x= "Activity Level", 
+       y = "Median Minutes") + 
+  scale_fill_brewer(palette = "Paired") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Conclusion  
+These were the original questions:  What are some trends in smart device usage?  How could these trends apply to Bellabeat customer?  How could these trends influence Bellabeat marketing strategy?  
+
+Daily tracking follows key metrics such as steps taken(average: 7638), distance traveled(average:  5.49km), sleep tracking(average:  419 minutes), and activity time.  These trends align perfectly with the needs of Bellabeat's target audience of women interested in holistic wellness. To better serve them, the Bellabeat app should prioritize well-being metrics over simple fitness numbers.  Instead of solely pushing step counts, the app should emphasize active zone minutes, sleep health, and recovery metrics to align with the higher user interest in sleep and overall wellness.  
+
+Based on the large gap in activity, the marketing strategy should focus on driving high-intensity engagement through gamification and rewards. Implement a goal-setting Feature within the Bellabeat app that encourages users to hit a minimum of 20 Very Active minutes three times a week. Marketing campaigns should focus on the mental and physical benefits of these high-intensity bursts.  Create content and in-app notifications that link sleep quality directly to energy and activity levels. This ties the high-engagement metric (Sleep) to the low-engagement metric (Activity).  Focus advertising efforts on the "Casual" users (those using the device 1-5 days per week) with promotional material showing the benefits of consistent, daily tracking, as they represent the largest segment for potential growth.
