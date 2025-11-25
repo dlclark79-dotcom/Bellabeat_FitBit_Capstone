@@ -35,7 +35,8 @@ The analysis led to three primary recommendations for Bellabeat's C-suite:
 | 3. Utilize Weekly Tracking Summaries | Send targeted weekly personalized summary emails to reinforce consistency and show progress. | Usage patterns showed that consistency drops off after the initial weeks, indicating a need for nudges to maintain engagement. |
 
 ## Visualizations  
-![Activity Levels in Users](https://github.com/dlclark79-dotcom/Bellabeat_FitBit_Capstone/blob/main/Bellabeat%20Activity.jpeg)
+![Activity Levels in Users](https://github.com/dlclark79-dotcom/Bellabeat_FitBit_Capstone/blob/main/Bellabeat%20Activity.jpeg)  
+
 This visualization shows the distribution of users across different activity levels, clearly highlighting the large proportion of Lightly Active and Sedentary users who are ripe for motivation.  
 Insight: The goal is to move users from the 'Lightly Active' group into the 'Fairly Active' and 'Very Active' segments through targeted app features.  
 
