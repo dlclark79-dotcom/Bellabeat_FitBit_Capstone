@@ -1,5 +1,5 @@
-# Bellabeat_FitBit_Capstone
-Bellabeat Case Study: Optimizing Marketing StrategyA Data Analysis Capstone Project for the Google Data Analytics Professional Certificate.  
+# Consumer Biometric Data Analysis: Identifying Growth Segments in Wearable Tech
+Optimizing Marketing Strategy: A Data Analysis Capstone Project for the Google Data Analytics Professional Certificate.  
 
 ## Project Overview  
 This project focuses on providing data-driven recommendations to Bellabeat, a high-tech company that manufactures health and wellness smart products for women. 
